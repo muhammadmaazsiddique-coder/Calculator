@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Math Solver - Android App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-light: #818cf8;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #0ea5e9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 24px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      max-width: 680px;
+      width: 100%;
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 40px 32px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(79, 70, 229, 0.2);
+      color: var(--primary-light);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      border: 1px solid rgba(129, 140, 248, 0.3);
+    }
+    .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-bottom: 28px;
+    }
+    .info-box {
+      background: rgba(14, 165, 233, 0.1);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 28px;
+      text-align: left;
+      font-size: 14px;
+      color: #bae6fd;
+    }
+    .info-box strong {
+      color: #fff;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+      text-align: left;
+    }
+    @media (max-width: 520px) {
+      .features { grid-template-columns: 1fr; }
+    }
+    .feature-item {
+      background: rgba(255,255,255,0.03);
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .feature-item span {
+      display: block;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+    }
+    .btn-primary:hover {
+      background: #4338ca;
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    .footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">Native Android App (APK)</div>
+    <div class="icon">∑</div>
+    <h1>AI Math Solver</h1>
+    <p class="subtitle">Smart step-by-step mathematical calculator powered by Gemini AI and Jetpack Compose.</p>
+
+    <div class="info-box">
+      <strong>📱 Notice regarding GitHub Pages:</strong>
+      This project is a native Android application (.apk). GitHub Pages hosts web pages, so opening this repo directly as a website resulted in "Page Not Found". You can build and install the APK on any Android phone!
+    </div>
+
+    <div class="features">
+      <div class="feature-item">
+        <span>📐 Step-by-Step Solutions</span>
+        Clear intermediate steps with LaTeX formatting.
+      </div>
+      <div class="feature-item">
+        <span>🎓 "How?" Concept Explanations</span>
+        Deep formula breakdowns and AI math tutoring.
+      </div>
+      <div class="feature-item">
+        <span>🔢 Multi-Domain Engine</span>
+        Algebra, Calculus, Matrices, Trig & Word problems.
+      </div>
+      <div class="feature-item">
+        <span>💾 Local Session History</span>
+        Saved calculations with Room database storage.
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href="https://github.com" class="btn btn-secondary">
+        View Project Source Code on GitHub
+      </a>
+    </div>
+
+    <div class="footer">
+      To install: Open project in Android Studio or download the APK directly from AI Studio Export menu.
+    </div>
+  </div>
+</body>
+</html>
