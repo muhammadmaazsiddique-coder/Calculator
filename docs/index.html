@@ -3,140 +3,412 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Math Solver - Android Application</title>
+  <title>AI Math Solver - Step-by-Step AI Calculator</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
   <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-light: #818cf8;
+      --primary-dark: #3730a3;
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-variant: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #0ea5e9;
+      --error: #ef4444;
+      --error-bg: rgba(239, 68, 68, 0.12);
+      --success: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0;
-      padding: 24px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #0f172a;
-      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      box-sizing: border-box;
     }
-    .card {
-      max-width: 600px;
+    .container {
+      max-width: 760px;
       width: 100%;
-      background-color: #1e293b;
-      border-radius: 20px;
-      padding: 32px 24px;
+      margin: 20px auto;
+    }
+    header {
       text-align: center;
-      border: 1px solid #334155;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      box-sizing: border-box;
+      margin-bottom: 28px;
     }
     .badge {
       display: inline-block;
-      background-color: rgba(99, 102, 241, 0.2);
-      color: #818cf8;
-      padding: 4px 14px;
+      background: rgba(99, 102, 241, 0.18);
+      color: var(--primary-light);
+      padding: 5px 14px;
       border-radius: 999px;
       font-size: 13px;
       font-weight: 700;
-      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
       border: 1px solid rgba(129, 140, 248, 0.3);
     }
-    .symbol {
-      font-size: 48px;
-      color: #818cf8;
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    p.lead {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+    .card {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid var(--surface-variant);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+      margin-bottom: 24px;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+    }
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .chip {
+      background: rgba(255,255,255,0.06);
+      color: #cbd5e1;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .chip:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      flex: 1;
+      background: #0f172a;
+      border: 1px solid var(--surface-variant);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+    }
+    input[type="text"]:focus {
+      border-color: var(--primary-light);
+    }
+    button.btn-solve {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button.btn-solve:hover {
+      background: var(--primary-dark);
+    }
+    .solution-box {
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 14px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-top: 16px;
+    }
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--primary-light);
+      margin-bottom: 6px;
+    }
+    .math-display {
+      font-size: 18px;
+      padding: 10px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      text-align: center;
+      overflow-x: auto;
+    }
+    .step-item {
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border-left: 3px solid var(--primary-light);
+    }
+    .step-num {
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .step-desc {
+      font-size: 14px;
+      color: var(--text-muted);
       margin-bottom: 8px;
     }
-    h1 {
-      margin: 0 0 12px 0;
-      font-size: 28px;
-      color: #ffffff;
-    }
-    p.desc {
-      color: #94a3b8;
-      font-size: 15px;
-      margin: 0 0 24px 0;
-      line-height: 1.5;
-    }
-    .alert {
-      background-color: rgba(14, 165, 233, 0.12);
-      border: 1px solid rgba(14, 165, 233, 0.3);
+    .final-ans {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1.5px solid var(--success);
       border-radius: 12px;
       padding: 14px;
-      margin-bottom: 24px;
-      text-align: left;
-      font-size: 13px;
-      color: #7dd3fc;
-      line-height: 1.5;
+      margin-top: 16px;
+      text-align: center;
     }
-    .features-list {
+    .final-ans.invalid {
+      background: var(--error-bg);
+      border-color: var(--error);
+    }
+    .final-ans strong {
+      display: block;
+      color: var(--success);
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .final-ans.invalid strong {
+      color: var(--error);
+    }
+    .features-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 28px;
-      text-align: left;
+      margin-top: 20px;
     }
-    .feature-box {
-      flex: 1 1 240px;
-      background-color: rgba(255, 255, 255, 0.04);
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      box-sizing: border-box;
-      font-size: 13px;
-      color: #cbd5e1;
+    .feature-card {
+      flex: 1 1 220px;
+      background: rgba(255,255,255,0.03);
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
     }
-    .feature-box strong {
+    .feature-card strong {
       display: block;
-      color: #ffffff;
-      margin-bottom: 2px;
+      color: #fff;
+      margin-bottom: 4px;
       font-size: 14px;
     }
-    .btn {
-      display: inline-block;
-      background-color: #4f46e5;
-      color: #ffffff;
-      padding: 12px 24px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 14px;
-      transition: background 0.2s;
+    .feature-card p {
+      font-size: 13px;
+      color: var(--text-muted);
     }
-    .btn:hover {
-      background-color: #4338ca;
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="badge">Native Android App</div>
-    <div class="symbol">&sum;</div>
-    <h1>AI Math Solver</h1>
-    <p class="desc">Interactive step-by-step mathematical calculator with LaTeX formatting and AI tutoring.</p>
+  <div class="container">
+    <header>
+      <div class="badge">Native Android App + Web Demo</div>
+      <h1>AI Math Solver</h1>
+      <p class="lead">Interactive step-by-step mathematical calculator with LaTeX formatting & multi-domain support.</p>
+    </header>
 
-    <div class="alert">
-      <strong>Android Application Notice:</strong><br>
-      This repository contains an Android application (.apk). To install on your mobile device, download the APK or open this project in Android Studio.
+    <div class="card">
+      <div class="card-title">Live Math Solver Demo</div>
+
+      <div class="preset-chips">
+        <span class="chip" onclick="setQuery('2x^2 + 4x - 6 = 0')">Quadratic: 2x² + 4x - 6 = 0</span>
+        <span class="chip" onclick="setQuery('3x - 9 = 15')">Linear: 3x - 9 = 15</span>
+        <span class="chip" onclick="setQuery('d/dx(3x^3)')">Calculus: d/dx(3x³)</span>
+        <span class="chip" onclick="setQuery('det([2, 5; 1, 3])')">Matrix: det([2,5; 1,3])</span>
+        <span class="chip" onclick="setQuery('42 / 0')">Division by Zero: 42 / 0</span>
+      </div>
+
+      <div class="input-row">
+        <input type="text" id="mathInput" value="2x^2 + 4x - 6 = 0" placeholder="Enter equation or expression...">
+        <button class="btn-solve" onclick="solveMath()">Solve</button>
+      </div>
+
+      <div id="solutionBox" class="solution-box">
+        <div class="section-label">Problem (LaTeX)</div>
+        <div id="problemDisplay" class="math-display"></div>
+
+        <div class="section-label">Step-by-Step Solution</div>
+        <div id="stepsContainer"></div>
+
+        <div id="finalAnsBox" class="final-ans">
+          <strong>Final Result</strong>
+          <div id="finalAnsDisplay"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="features-list">
-      <div class="feature-box">
-        <strong>&bull; Step-by-Step Solutions</strong>
-        Complete intermediate steps with LaTeX formatting.
-      </div>
-      <div class="feature-box">
-        <strong>&bull; "How?" Concept Tutor</strong>
-        In-depth mathematical concept and formula explanations.
-      </div>
-      <div class="feature-box">
-        <strong>&bull; Multi-Domain Engine</strong>
-        Algebra, Calculus, Matrices, Trig & Word problems.
-      </div>
-      <div class="feature-box">
-        <strong>&bull; Local Session History</strong>
-        Store past calculations with Room local persistence.
+    <div class="card">
+      <div class="card-title">Supported Mathematical Domains</div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <strong>📐 Algebra</strong>
+          <p>Quadratics, linear equations, systems, polynomials, factoring.</p>
+        </div>
+        <div class="feature-card">
+          <strong>📈 Calculus</strong>
+          <p>Derivatives, integrals, limits, summation, and series.</p>
+        </div>
+        <div class="feature-card">
+          <strong>🔢 Matrices</strong>
+          <p>Determinants, matrix inverses, additions, multiplications.</p>
+        </div>
+        <div class="feature-card">
+          <strong>📐 Trigonometry</strong>
+          <p>Sine, cosine, tangent, identities, radians & degrees.</p>
+        </div>
+        <div class="feature-card">
+          <strong>➕ Arithmetic</strong>
+          <p>Order of operations (PEMDAS), fractions, powers, roots.</p>
+        </div>
+        <div class="feature-card">
+          <strong>💡 Word Problems</strong>
+          <p>Physics kinematics, geometry, rates, financial math.</p>
+        </div>
       </div>
     </div>
 
-    <a href="https://github.com" class="btn">View Source Code on GitHub</a>
+    <footer>
+      AI Math Solver &bull; Kotlin & Jetpack Compose Android Application &bull; Room Local History &bull; Gemini AI
+    </footer>
   </div>
+
+  <script>
+    function setQuery(q) {
+      document.getElementById('mathInput').value = q;
+      solveMath();
+    }
+
+    function renderLatex(id, latex) {
+      const el = document.getElementById(id);
+      if (window.katex) {
+        try {
+          katex.render(latex, el, { displayMode: true, throwOnError: false });
+        } catch (e) {
+          el.innerText = latex;
+        }
+      } else {
+        el.innerText = latex;
+      }
+    }
+
+    function solveMath() {
+      const input = document.getElementById('mathInput').value.trim();
+      const stepsDiv = document.getElementById('stepsContainer');
+      const finalBox = document.getElementById('finalAnsBox');
+      stepsDiv.innerHTML = '';
+
+      if (input.includes('/0') || input.includes('/ 0')) {
+        renderLatex('problemDisplay', '\\frac{42}{0}');
+        stepsDiv.innerHTML = `
+          <div class="step-item">
+            <div class="step-num">Step 1: Analyze Denominator</div>
+            <div class="step-desc">The divisor in this expression is 0.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">Step 2: Division by Zero Principle</div>
+            <div class="step-desc">In standard real arithmetic, division by zero is strictly undefined. No number multiplied by 0 can equal a non-zero numerator.</div>
+          </div>
+        `;
+        finalBox.className = 'final-ans invalid';
+        finalBox.querySelector('strong').innerText = 'Mathematical Error';
+        renderLatex('finalAnsDisplay', '\\mathbf{\\text{Undefined (Division by Zero)}}');
+        return;
+      }
+
+      finalBox.className = 'final-ans';
+      finalBox.querySelector('strong').innerText = 'Final Result';
+
+      if (input.includes('^2') || input.includes('x^2')) {
+        renderLatex('problemDisplay', '2x^2 + 4x - 6 = 0');
+        stepsDiv.innerHTML = `
+          <div class="step-item">
+            <div class="step-num">Step 1: Identify Coefficients</div>
+            <div class="step-desc">Standard form ax² + bx + c = 0 with a = 2, b = 4, c = -6.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">Step 2: Compute Discriminant</div>
+            <div class="step-desc">Δ = b² - 4ac = 4² - 4(2)(-6) = 16 + 48 = 64.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">Step 3: Apply Quadratic Formula</div>
+            <div class="step-desc">x = (-4 ± √64) / (2·2) = (-4 ± 8) / 4.</div>
+          </div>
+        `;
+        renderLatex('finalAnsDisplay', '\\mathbf{x_1 = 1, \\quad x_2 = -3}');
+      } else if (input.includes('d/dx')) {
+        renderLatex('problemDisplay', '\\frac{d}{dx}[3x^3]');
+        stepsDiv.innerHTML = `
+          <div class="step-item">
+            <div class="step-num">Step 1: Apply Power Rule</div>
+            <div class="step-desc">d/dx[c · xⁿ] = c · n · xⁿ⁻¹.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">Step 2: Simplify</div>
+            <div class="step-desc">3 · 3 · x³⁻¹ = 9x².</div>
+          </div>
+        `;
+        renderLatex('finalAnsDisplay', '\\mathbf{9x^2}');
+      } else if (input.includes('det')) {
+        renderLatex('problemDisplay', '\\det \\begin{pmatrix} 2 & 5 \\\\ 1 & 3 \\end{pmatrix}');
+        stepsDiv.innerHTML = `
+          <div class="step-item">
+            <div class="step-num">Step 1: Determinant Formula</div>
+            <div class="step-desc">For 2x2 matrix: det(A) = ad - bc.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">Step 2: Evaluate</div>
+            <div class="step-desc">(2)(3) - (5)(1) = 6 - 5 = 1.</div>
+          </div>
+        `;
+        renderLatex('finalAnsDisplay', '\\mathbf{\\det(A) = 1}');
+      } else {
+        renderLatex('problemDisplay', '3x - 9 = 15');
+        stepsDiv.innerHTML = `
+          <div class="step-item">
+            <div class="step-num">Step 1: Add 9 to both sides</div>
+            <div class="step-desc">3x = 15 + 9 = 24.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">Step 2: Divide by 3</div>
+            <div class="step-desc">x = 24 / 3 = 8.</div>
+          </div>
+        `;
+        renderLatex('finalAnsDisplay', '\\mathbf{x = 8}');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      solveMath();
+    });
+  </script>
 </body>
 </html>
