@@ -1,0 +1,6 @@
+{
+  "name": "AI Math Solver",
+  "description": "Interactive AI Calculator and Math Assistant solving expressions, equations, and word problems step-by-step with LaTeX formatting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
