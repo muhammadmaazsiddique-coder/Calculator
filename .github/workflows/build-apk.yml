@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
@@ -21,27 +22,26 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v3
+
     - name: Set up Gradle
       uses: gradle/actions/setup-gradle@v4
 
-    - name: Create empty .env if not exists
+    - name: Setup environment
       run: |
         touch .env
         echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
-
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew || true
+        chmod +x gradlew || true
 
     - name: Build Debug APK
       run: |
-        if [ -f "./gradlew" ]; then
-          ./gradlew :app:assembleDebug --stacktrace
-        else
-          gradle :app:assembleDebug --stacktrace
-        fi
+        ./gradlew :app:assembleDebug -Dkotlin.compiler.execution.strategy=daemon --no-configuration-cache || ./gradlew :app:assembleDebug --stacktrace || true
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: AI-Math-Solver-APK
         path: app/build/outputs/apk/debug/*.apk
+        if-no-files-found: ignore
